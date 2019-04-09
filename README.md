@@ -1,2 +1,2 @@
 # fintech-lab
-python package facilitating the sourcing and exploration of fintech data
+python package facilitating sourcing and exploration of fintech data

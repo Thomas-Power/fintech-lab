@@ -71,10 +71,10 @@ class GraphDisplayer:
 		for pair in plot_pairs:
 			plt.plot(pair[0], pair[1], plot[2])
 		if axis_labels is not None:
-			plt.xlabel(axis_labels[0])
-			plt.ylabel(axis_labels[1])
-			plt.zlabel(axis_labels[2])
-		ax.plot_surface(x, y, z, cmap=plt.cm.autumn, rstride=1, cstride=1, linewidth=0)
+			ax.set_xlabel(axis_labels[0])
+			ax.set_ylabel(axis_labels[1])
+			ax.set_zlabel(axis_labels[2])
+		ax.plot_surface(x, y, z, cmap=plt.cm.hot, rstride=1, cstride=1, linewidth=0)
 		plt.show()
 		
 	#Displays plotted line, appropriate for statistical distributions

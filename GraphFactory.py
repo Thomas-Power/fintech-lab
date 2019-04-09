@@ -11,6 +11,12 @@ class GraphFactory:
 		
 	#Sources data for and produces a time series displaying the gaussian propability of a tickers current value relative
 	#to its distance from its linear regressed analogue
+	def source_series_of_gaussian_probability_of_divergence_from_linear_regression(self, symbol, start_date, end_date=None, length_days=50):
+		series = self.db.select(symbol, start_date, end_date)
+		self.series_of_gaussian_probability_of_divergence_from_linear_regression(series, length_days)
+		
+	#Sources data for and produces a time series displaying the gaussian propability of a tickers current value relative
+	#to its distance from its linear regressed analogue
 	def source_relational_series_of_gaussian_probability_of_divergence_from_linear_regression(self, symbol_one, symbol_two, start_date, end_date=None, length_days=50):
 		series_one = self.db.select(symbol_one, start_date, end_date)
 		series_two = self.db.select(symbol_two, start_date, end_date)
@@ -117,6 +123,13 @@ class GraphFactory:
 		title = "β - Relationship " + symbol_one + " to " + symbol_two
 		self.graphDisplay.colormesh(kde, [[data_lr["Value"], change_two["Value"]]], axis_labels, title)
 	
+		
+	#Sources the data for and displays the beta relationship of two commodities	
+	def source_beta_relationship(self, symbol_one, symbol_two, start_date, end_date=None, days_increment=5):
+		series_one = self.db.select(symbol_one, start_date, end_date)
+		series_two = self.db.select(symbol_two, start_date, end_date)
+		self.beta_relationship(series_one, series_two, days_increment)
+	
 	#Displays the beta relationship of two commodities
 	def beta_relationship(self, commodity_one, commodity_two, days_increment=None):
 		change_one = self.analyzer.percent_change_series(commodity_one, days_increment)
@@ -127,12 +140,23 @@ class GraphFactory:
 		axis_labels = [symbol_one + " % Change", symbol_two + " % Change"]
 		title = "β - Relationship " + symbol_one + " to " + symbol_two
 		self.graphDisplay.cross_axis([[change_one["Value"].values.tolist(), change_two["Value"].values.tolist()]], [[data_lr["Value"], change_two["Value"]]], axis_labels, title)
-	
-	#Sources the data for and displays the beta relationship of two commodities	
-	def source_beta_relationship(self, symbol_one, symbol_two, start_date, end_date=None, days_increment=5):
+		
+	#Sources the data for and displays the beta relationship of two commodities	as a 3D graph
+	def source_beta_relationship_3d(self, symbol_one, symbol_two, start_date, end_date=None, days_increment=5):
 		series_one = self.db.select(symbol_one, start_date, end_date)
 		series_two = self.db.select(symbol_two, start_date, end_date)
-		self.beta_relationship(series_one, series_two, days_increment)
+		self.beta_relationship_3d(series_one, series_two, days_increment)
+		
+	#Displays the beta relationship of two commodities as a 3D graph
+	def beta_relationship_3d(self, series_one, series_two, days_increment=None):
+		change_one = self.analyzer.percent_change_series(series_one, days_increment)
+		change_two = self.analyzer.percent_change_series(series_two, days_increment)
+		kde = self.analyzer.kernal_density_estimation(change_one, change_two)
+		symbol_one = series_one["ticker_name"].iloc[0]
+		symbol_two = series_two["ticker_name"].iloc[0]
+		axis_labels = [symbol_one + " % Change", symbol_two + " % Change", "Probability density"]
+		title = "β - Relationship " + symbol_one + " to " + symbol_two
+		self.graphDisplay.surface_3d(kde, axis_labels=axis_labels, title=title)
 	
 	#Displays the time series value of a commodity in terms of the value of another
 	def relational_series(self, commodity_one, commodity_two):
