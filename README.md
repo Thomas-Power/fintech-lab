@@ -20,8 +20,6 @@ Pandas, numpy, MySQL, SciPy, Sk.Learn, Matplotlib
 
 
 ### To Use:
-
-With all dependencies installed simply launch MysqlInitializer to build necessary table, no other set up required.
 The package allows use and entry from any class:
 
 **fintech-lab.GraphFactory** is the highest level entry point which can automatically sourcing, analysis and graphing of statistical from given short simple parameters
