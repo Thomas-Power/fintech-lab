@@ -1,5 +1,5 @@
 # fintech-lab
-Python package designed to facilitate the sourcing, transformation and display of time-series data using statistical and machine learning techniques.
+Python package designed to allow easy sourcing, transformation and display of time-series data using statistical and machine learning techniques.
 
 Included packages:
 Pandas, numpy, MySQL, SciPy, Sk.Learn, Matplotlib
