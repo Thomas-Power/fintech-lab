@@ -12,7 +12,7 @@ Pandas, numpy, MySQL, SciPy, Sk.Learn, Matplotlib
 
 3. Scalable array of transformations and analysis functions using efficient numpy commands
 
-4. Automated creation of presentation worthy graphs with all essential annotations created automatically 
+4. Automated creation of presentation-worthy graphs with all essential annotations created automatically 
 
 5. Allows convenient investigation and machine learning analysis of complex financial time-series data 
 
