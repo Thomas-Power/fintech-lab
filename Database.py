@@ -1,4 +1,5 @@
 import mysql.connector
+from MysqlInitializer import MysqlInitializer
 
 #Implementation of required functions for data retrieval and verification using MySQL server
 class Database:
@@ -11,6 +12,8 @@ class Database:
 			database="stock_data"
 		)
 		self.cursor = self.db.cursor()
+		initializer = MysqlInitializer()
+		initializer.setUp()
 	
 	#retrieves time series values from database
 	def select(self, values):
