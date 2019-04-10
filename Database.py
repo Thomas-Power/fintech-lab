@@ -13,7 +13,7 @@ class Database:
 		)
 		self.cursor = self.db.cursor()
 		initializer = MysqlInitializer()
-		initializer.setUp()
+		initializer.setup()
 	
 	#retrieves time series values from database
 	def select(self, values):
