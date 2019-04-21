@@ -32,7 +32,7 @@ class GraphDisplayer:
 		if file_name is None:
 			plt.show()
 		else:
-			fig.savefig(file_name, bbox_inches='tight')
+			fig.savefig(file_name)
 			plt.close()
 		
 	#Cartesian graph, for showing positive and negative values
