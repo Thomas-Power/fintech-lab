@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from sklearn import linear_model
 from TickerSchema import TickerSchema
 from DataAnalyzer import DataAnalyzer
 

@@ -4,8 +4,15 @@ from mpl_toolkits.mplot3d import Axes3D
 
 #Displays data using matplotlib in appropriate formatting
 class GraphDisplayer:
+
+	def format_file_dir(self, file_name):
+		if file_name is None:
+			file_name = "graph"
+		return "./static/" + file_name + ".png"
+
 	#Simple time series data
-	def simple_time_series(self, data, metric="Value in USD", title=""):
+	def simple_time_series(self, data, metric="Value in USD", title="", file_name=None):
+		file_dir = self.format_file_dir(file_name)
 		fig = plt.figure()
 		ax=plt.gca()
 		plt.title(title)
@@ -14,10 +21,11 @@ class GraphDisplayer:
 		if len(data["Date"]) < 90:
 			ax.xaxis.set_major_locator(ticker.MultipleLocator(15))
 		plt.ylabel(metric)
-		plt.show()
+		plt.show() if file_name is None else fig.savefig(file_dir)
 		
 	#Plots multible times series along-side eachother
-	def simple_time_multiseries(self, plot_pairs, metric="Value in USD", title=""):
+	def simple_time_multiseries(self, plot_pairs, metric="Value in USD", title="", file_name=None):
+		file_dir = self.format_file_dir(file_name)
 		fig = plt.figure()
 		ax=plt.gca()
 		plt.title(title)
@@ -25,10 +33,11 @@ class GraphDisplayer:
 			plt.plot(pair["Date"], pair["Value"])
 		fig.autofmt_xdate()
 		plt.ylabel(metric)
-		plt.show()
+		plt.show() if file_name is None else fig.savefig(file_dir)
 		
 	#Cartesian graph, for showing positive and negative values
-	def cross_axis(self, scatter_pairs, plot_pairs=[], axis_labels=None, title=""):
+	def cross_axis(self, scatter_pairs, plot_pairs=[], axis_labels=None, title="", file_name=None):
+		file_dir = self.format_file_dir(file_name)
 		fig = plt.figure()
 		ax=plt.gca()
 		plt.title(title)
@@ -43,10 +52,11 @@ class GraphDisplayer:
 			plt.ylabel(axis_labels[1])
 		plt.ylim(ax.get_xlim())
 		ax.set_aspect('equal', 'box')
-		plt.show()
+		plt.show() if file_name is None else fig.savefig(file_dir)
 	
 	#Applys shading and color to signify density of 3rd dimension axis
-	def colormesh(self, rank_three_tensor, plot_pairs=[], axis_labels=None, title=""):
+	def colormesh(self, rank_three_tensor, plot_pairs=[], axis_labels=None, title="", file_name=None):
+		file_dir = self.format_file_dir(file_name)
 		x, y, z = rank_three_tensor
 		fig = plt.figure()
 		ax = plt.gca()
@@ -60,10 +70,11 @@ class GraphDisplayer:
 			plt.ylabel(axis_labels[1])
 		plt.axhline(0, color='black')
 		plt.axvline(0, color='black')
-		plt.show()
+		plt.show() if file_name is None else fig.savefig(file_dir)
 		
 	# Produces a 3D graph 
-	def surface_3d(self, rank_three_tensor, plot_pairs=[], axis_labels=None, title=""):
+	def surface_3d(self, rank_three_tensor, plot_pairs=[], axis_labels=None, title="", file_name=None):
+		file_dir = self.format_file_dir(file_name)
 		x, y, z = rank_three_tensor
 		fig = plt.figure()
 		ax = plt.axes(projection='3d')
@@ -71,14 +82,15 @@ class GraphDisplayer:
 		for pair in plot_pairs:
 			plt.plot(pair[0], pair[1], plot[2])
 		if axis_labels is not None:
-			ax.set_xlabel(axis_labels[0])
-			ax.set_ylabel(axis_labels[1])
-			ax.set_zlabel(axis_labels[2])
-		ax.plot_surface(x, y, z, cmap=plt.cm.hot, rstride=1, cstride=1, linewidth=0)
-		plt.show()
+			plt.xlabel(axis_labels[0])
+			plt.ylabel(axis_labels[1])
+			plt.zlabel(axis_labels[2])
+		ax.plot_surface(x, y, z, cmap=plt.cm.autumn, rstride=1, cstride=1, linewidth=0)
+		plt.show() if file_name is None else fig.savefig(file_dir)
 		
 	#Displays plotted line, appropriate for statistical distributions
-	def distribution_line(self, plot_pair, scatter_pairs=[], axis_labels=None, title="", reference=0):
+	def distribution_line(self, plot_pair, scatter_pairs=[], axis_labels=None, title="", reference=0, file_name=None):
+		file_dir = self.format_file_dir(file_name)
 		x, y = plot_pair
 		fig = plt.figure()
 		ax = plt.gca()
@@ -90,10 +102,11 @@ class GraphDisplayer:
 		for pair in scatter_pairs:
 			plt.scatter(pair[0], pair[1], marker='.', color="r")
 		ax.set_title(title)
-		plt.show()
+		plt.show() if file_name is None else fig.savefig(file_dir)
 		
 	#Produces a histogram
-	def histogram(self, series, plot_pairs=[], scatter_pairs=[], axis_labels=None, title="", bins=100):
+	def histogram(self, series, plot_pairs=[], scatter_pairs=[], axis_labels=None, title="", bins=100, file_name=None):
+		file_dir = self.format_file_dir(file_name)
 		fig = plt.figure()
 		ax = plt.gca()
 		plt.hist(series, bins, density=True)
@@ -106,7 +119,7 @@ class GraphDisplayer:
 			plt.scatter(pair[0], pair[1], marker='|', color="r")
 			ax.annotate(str(round(pair[0], 2)), (pair[0], pair[1]))
 		ax.set_title(title)
-		plt.show()
+		plt.show() if file_name is None else fig.savefig(file_dir)
 	
 	
 	

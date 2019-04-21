@@ -1,4 +1,3 @@
-import pandas
 import datetime
 from RestAdapter import RestAdapter
 from Database import Database
@@ -34,8 +33,8 @@ class DatabaseAdapter:
 		replace_values = False
 		new_values = [ticker_name, start_date, end_date]
 		compare_values = self.db.select_meta(ticker_name)
-		
-		if compare_values != []:
+		if compare_values is not None and len(compare_values) != 0:
+			print(compare_values)
 			compare_values = compare_values[0]
 			old_start = compare_values[1]
 			old_end = compare_values[2]
