@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
-from TickerSchema import TickerSchema
-from DataAnalyzer import DataAnalyzer
+from fintechlab.TickerSchema import TickerSchema
+from fintechlab.DataAnalyzer import DataAnalyzer
 
 #Class used to format data to retain modular independence of analyzer class
 class AnalyzerAdapter:

@@ -1,7 +1,7 @@
 import pandas
 import io
-from RestRequester import RestRequester
-from TickerSchema import TickerSchema
+from fintechlab.RestRequester import RestRequester
+from fintechlab.TickerSchema import TickerSchema
 
 #Class to format data to and from call to REST api
 class RestAdapter:

@@ -1,21 +1,27 @@
-import AnalyzerAdapter as aa
-import DatabaseAdapter as da
-import GraphDisplayer as ga
+from fintechlab.AnalyzerAdapter import AnalyzerAdapter
+from fintechlab.DatabaseAdapter import DatabaseAdapter
+from fintechlab.GraphDisplayer import GraphDisplayer
 
 #A high level class used to conveniently source data and produce graphs using other libraries in the package
 class GraphFactory:
 	def __init__(self):
-		self.analyzer = aa.AnalyzerAdapter()
-		self.db = da.DatabaseAdapter()
-		self.graphDisplay = ga.GraphDisplayer()
+		self.analyzer = AnalyzerAdapter()
+		self.db = DatabaseAdapter()
+		self.graphDisplay = GraphDisplayer()
 		
-	#Sources data for and produces a time series displaying the gaussian propability of a tickers current value relative
+	#Sources and relates data and produces a time series displaying the gaussian propability of a tickers current value relative
 	#to its distance from its linear regressed analogue
 	def source_relational_series_of_gaussian_probability_of_divergence_from_linear_regression(self, symbol_one, symbol_two, start_date, end_date=None, length_days=50, file_name=None):
 		series_one = self.db.select(symbol_one, start_date, end_date)
 		series_two = self.db.select(symbol_two, start_date, end_date)
 		relational_series = self.analyzer.get_series_relation(series_one, series_two)
 		self.series_of_gaussian_probability_of_divergence_from_linear_regression(relational_series, length_days, file_name=file_name)
+		
+	#Sources data and produces a time series displaying the gaussian propability of a tickers current value relative
+	#to its distance from its linear regressed analogue
+	def source_series_of_gaussian_probability_of_divergence_from_linear_regression(self, symbol, start_date, end_date=None, length_days=50, file_name=None):
+		series = self.db.select(symbol, start_date, end_date)
+		self.series_of_gaussian_probability_of_divergence_from_linear_regression(series, length_days, file_name=file_name)
 		
 	#Produces a time series displaying the gaussian propability of a tickers current value relative
 	#to its distance from its linear regressed analogue
