@@ -74,8 +74,8 @@ class GraphFactory:
 		
 	#Displays the beta relationship of two commodities displaying frequency on a colormesh heat map
 	def colormesh_beta_relationship(self, commodity_one, commodity_two, days_increment=5, data_partitions=64, file_name=None):
-		change_one = self.analyzer.percent_change_series(commodity_one, days_increment)
-		change_two = self.analyzer.percent_change_series(commodity_two, days_increment)
+		change_one = self.analyzer.change_series(commodity_one, days_increment)
+		change_two = self.analyzer.change_series(commodity_two, days_increment)
 		kde = self.analyzer.kernal_density_estimation(change_one, change_two, data_partitions)
 		symbol_one = commodity_one["ticker_name"].iloc[0]
 		symbol_two = commodity_two["ticker_name"].iloc[0]
@@ -93,8 +93,8 @@ class GraphFactory:
 	#Displays the distribution of the beta relationship between two commodities at 
 	#a specific slice of the first symbols price movement
 	def beta_relationship_distribution_slice(self, commodity_one, commodity_two, percent_change, days_increment=5, data_partitions=64, file_name=None):
-		change_one = self.analyzer.percent_change_series(commodity_one, days_increment)
-		change_two = self.analyzer.percent_change_series(commodity_two, days_increment)
+		change_one = self.analyzer.change_series(commodity_one, days_increment)
+		change_two = self.analyzer.change_series(commodity_two, days_increment)
 		kde = self.analyzer.kernal_density_estimation(change_one, change_two, data_partitions)
 		x_value, y_series, z_series = self.analyzer.get_distribution_slice_from_tensor(kde, percent_change)
 		maximum_point = self.analyzer.get_maximum_vector(y_series, z_series)
@@ -113,8 +113,8 @@ class GraphFactory:
 	
 	#Displays the beta relationship of two commodities and displays a linear regression of the relationship
 	def colormesh_linear_regress_beta_relationship(self, commodity_one, commodity_two, days_increment=None, file_name=None):
-		change_one = self.analyzer.percent_change_series(commodity_one, days_increment)
-		change_two = self.analyzer.percent_change_series(commodity_two, days_increment)
+		change_one = self.analyzer.change_series(commodity_one, days_increment)
+		change_two = self.analyzer.change_series(commodity_two, days_increment)
 		data_lr = self.analyzer.linear_regress_series(change_one, change_two)
 		kde = self.analyzer.kernal_density_estimation(change_one, change_two)
 		symbol_one = commodity_one["ticker_name"].iloc[0]
@@ -125,8 +125,8 @@ class GraphFactory:
 	
 	#Displays the beta relationship of two commodities
 	def beta_relationship(self, commodity_one, commodity_two, days_increment=None, file_name=None):
-		change_one = self.analyzer.percent_change_series(commodity_one, days_increment)
-		change_two = self.analyzer.percent_change_series(commodity_two, days_increment)
+		change_one = self.analyzer.change_series(commodity_one, days_increment)
+		change_two = self.analyzer.change_series(commodity_two, days_increment)
 		data_lr = self.analyzer.linear_regress_series(change_one, change_two)
 		symbol_one = commodity_one["ticker_name"].iloc[0]
 		symbol_two = commodity_two["ticker_name"].iloc[0]

@@ -27,7 +27,7 @@ class DataAnalyzer:
 		
 	def change_series(self, data, days_increment=5):
 		data = data[::days_increment]
-		return (data[:-1] / data[1:])
+		return ((data[:-1] / data[1:]) -1)
 		
 	def percent_change_series(self, data, days_increment=5):
 		data = data[::days_increment]

@@ -32,7 +32,7 @@ class GraphDisplayer:
 		if file_name is None:
 			plt.show()
 		else:
-			fig.savefig(file_name)
+			fig.savefig(file_name, bbox_inches='tight')
 			plt.close()
 		
 	#Cartesian graph, for showing positive and negative values
@@ -102,7 +102,6 @@ class GraphDisplayer:
 		x, y = plot_pair
 		fig = plt.figure()
 		ax = plt.gca()
-		plt.axvline(reference, color='grey')
 		plt.plot(x, y, color='b')
 		if axis_labels is not None:
 			plt.xlabel(axis_labels[0])

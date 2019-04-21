@@ -14,7 +14,6 @@ class AnalyzerAdapter:
 		ticker_name = series["ticker_name"] + " divergence from linear regression"
 		return TickerSchema.create(series["Date"], ticker_name, divergence)
 
-
 	def get_series_relation(self, series_one, series_two):
 		date = series_one["Date"]
 		ticker_name = series_one["ticker_name"] + " / " + series_two["ticker_name"]
