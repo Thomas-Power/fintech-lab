@@ -82,10 +82,10 @@ class DataAnalyzer:
 		y_distribution = norm.pdf(x_scale, mu, sigma)
 		return (x_scale, y_distribution)
 		
-	def p_on_gaussian(self, series, value, i=100):
+	def p_on_gaussian(self, series, value):
 		mu = np.mean(series)
 		sigma = np.std(series)
-		probability = norm.cdf(value, mu, sigma)
+		probability = norm.cdf(value, mu, sigma) / 100
 		return (value, probability)
 		
 	def beta_distribution(self, series):
