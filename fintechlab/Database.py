@@ -1,5 +1,5 @@
 import mysql.connector
-
+from fintechlab.MysqlInitializer import MysqlInitializer
 #Implementation of required functions for data retrieval and verification using MySQL server
 class Database:
 	#replace variables with appropriate credentials
@@ -8,9 +8,12 @@ class Database:
 			host="localhost",
 			user="root",
 			passwd="password",
-			database="stock_data"
+			database="stock_data",
+			auth_plugin='mysql_native_password'
 		)
 		self.cursor = self.db.cursor()
+		initDB = MysqlInitializer()
+		initDB.setup()
 	
 	#retrieves time series values from database
 	def select(self, values):

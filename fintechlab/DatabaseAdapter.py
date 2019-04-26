@@ -12,24 +12,31 @@ class DatabaseAdapter:
 
 	#inserts time series values into database
 	def insert(self, values):
-		self.db.insert(values)
-	
+		print("Adding data...")
+		self.db.insert(list(values.itertuples(index=False, name=None)))
+		
 	#retrieves time series values from database
 	def select(self, ticker_name, start_date, end_date=None):
 		if end_date is None:
 			end_date=datetime.date.today().strftime("%Y-%m-%d")
-		self.verify_dates_available(ticker_name, start_date, end_date)
+		if self.dates_are_unavailable(ticker_name, start_date, end_date):
+			request_data = self.restadapter.get_daily_prices(ticker_name).values.tolist()
+			self.db.insert(request_data)
 		values = [ticker_name, start_date, end_date]
 		result = self.db.select(values)
 		result = TickerSchema.create_from_list(result)
 		return result
 		
-	#replace meta values used to track availability of date ranges in local database
-	def replace_meta(self, new_values):
-		self.db.replace_meta(new_values)
+	def select_derivitive(self, ticker_name, start_date, end_date=None):
+		if end_date is None:
+			end_date=datetime.date.today().strftime("%Y-%m-%d")
+		values = [ticker_name, start_date, end_date]
+		result = self.db.select(values)
+		result = TickerSchema.create_from_list(result)
+		return result
 	
 	#Verifies if data is available offline, otherwise sources data from REST API
-	def verify_dates_available(self, ticker_name, start_date, end_date):
+	def dates_are_unavailable(self, ticker_name, start_date, end_date):
 		replace_values = False
 		new_values = [ticker_name, start_date, end_date]
 		compare_values = self.db.select_meta(ticker_name)
@@ -54,10 +61,6 @@ class DatabaseAdapter:
 			replace_values = True
 		
 		if replace_values:
-			request_data = self.restadapter.get_daily_prices(ticker_name).values.tolist()
-			if len(request_data) > 0:
-				print("Adding new data...")
-				self.db.insert(request_data)
-				self.db.replace_meta(new_values)
-			else:
-				print("No data found from request!")	
+			print("Data not available in database...")
+			self.db.replace_meta(new_values)
+		return replace_values

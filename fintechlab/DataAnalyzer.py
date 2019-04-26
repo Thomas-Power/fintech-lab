@@ -9,6 +9,15 @@ import math
 
 #Object to contain relevant mathematical operations
 class DataAnalyzer:
+	def normalize_to_x(self, series, x_value):
+		return series / x_value
+
+	def get_mean_return(self, series, short=False, leveredge=1):
+		if short:
+			return (((series[0] / series.mean())-1) * leveredge) + 1
+		else:
+			return (((series.mean() / series[0])-1) * leveredge) + 1
+
 	def get_series_relation(self, x_series, y_series):
 		return x_series / y_series
 		
@@ -44,7 +53,7 @@ class DataAnalyzer:
 		return result
 		
 	def get_distribution_slice_from_tensor(self, x_series, y_array, z_array, x_value):
-		bucketed_indice = np.digitize(x_value, x_series)
+		bucketed_indice = np.digitize(x_value, x_series) - 1
 		x_bucketed = x_series[bucketed_indice]
 		y_series = y_array[bucketed_indice]
 		z_series = z_array[bucketed_indice]
@@ -81,6 +90,12 @@ class DataAnalyzer:
 		x_scale = np.linspace(mu - 3*sigma, mu + 3*sigma, i)
 		y_distribution = norm.pdf(x_scale, mu, sigma)
 		return (x_scale, y_distribution)
+		
+	def pdf_on_gaussian(self, series, value, i=100):
+		mu = np.mean(series)
+		sigma = np.std(series)
+		probability = norm.pdf(value, mu, sigma)
+		return (value, probability)
 		
 	def p_on_gaussian(self, series, value, i=100):
 		mu = np.mean(series)

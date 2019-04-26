@@ -107,7 +107,7 @@ class GraphDisplayer:
 			plt.xlabel(axis_labels[0])
 			plt.ylabel(axis_labels[1])
 		for pair in scatter_pairs:
-			plt.scatter(pair[0], pair[1], marker='.', color="r")
+			plt.scatter(pair[0], pair[1], marker='o', color="r")
 		ax.set_title(title)
 		if file_name is None:
 			plt.show()

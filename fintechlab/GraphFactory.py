@@ -9,6 +9,21 @@ class GraphFactory:
 		self.db = DatabaseAdapter()
 		self.graphDisplay = GraphDisplayer()
 		
+	def source_all_mean_returns_over_x_days(self, symbol, start_date, end_date=None, relate_symbol=None, linear_regress=True, days_view=10, short=False, leveredge=1, file_name=None):
+		series = self.db.select(symbol, start_date, end_date)
+		if relate_symbol is not None:
+			series_two = self.db.select(relate_symbol, start_date, end_date)
+			series = self.analyzer.get_series_relation(series, series_two)
+		self.all_mean_returns_over_x_days(series, linear_regress, days_view, short, leveredge, file_name=file_name)
+	
+	def all_mean_returns_over_x_days(self, series, linear_regress=True, days_view=10, short=False, leveredge=1, file_name=None):
+		series = self.analyzer.get_all_mean_returns(series, days_view, short, leveredge)
+		if linear_regress:
+			series_r = self.analyzer.linear_regress_time_series(series)
+			self.graphDisplay.simple_time_multiseries([series, series_r], metric="% return", title=str(series["ticker_name"].iloc[0]), file_name=file_name)
+		else:
+			self.graphDisplay.simple_time_series(series, metric="% return", title=str(series["ticker_name"].iloc[0]), file_name=file_name)
+		
 	#Sources and relates data and produces a time series displaying the gaussian propability of a tickers current value relative
 	#to its distance from its linear regressed analogue
 	def source_relational_series_of_gaussian_probability_of_divergence_from_linear_regression(self, symbol_one, symbol_two, start_date, end_date=None, length_days=50, file_name=None):
@@ -43,9 +58,12 @@ class GraphFactory:
 		self.graphDisplay.histogram(data["Value"], axis_labels=[metric, "Probability"], title=title, bins=bins, file_name=file_name)
 		
 	#Sources data for and produces a guassian representation of a commodities value in a specified window of time
-	def source_time_series_gaussian(self, symbol, start_date, end_date=None, metric="Value in USD", file_name=None):
-		data = self.db.select(symbol, start_date, end_date)
-		self.time_series_gaussian(data, metric, file_name=file_name)
+	def source_time_series_gaussian(self, symbol, start_date, end_date=None, relate_symbol=None, metric="Value in USD", file_name=None):
+		series = self.db.select(symbol, start_date, end_date)
+		if relate_symbol is not None:
+			series_two = self.db.select(relate_symbol, start_date, end_date)
+			series = self.analyzer.get_series_relation(series, series_two)
+		self.time_series_gaussian(series, metric, file_name=file_name)
 		
 	#Produces a guassian representation of a commodities value in a specified window of time
 	def time_series_gaussian(self, data, metric="Value in USD", file_name=None):
@@ -55,6 +73,26 @@ class GraphFactory:
 		title = "Value of " + symbol + " from " + start + " to " + end
 		distribution =  self.analyzer.get_gaussian_distribution(data)
 		self.graphDisplay.distribution_line(distribution, axis_labels=[metric, "Probability"], title=title, file_name=file_name)
+		
+	#Sources data for and produces a guassian representation of a commodities value in a specified window of time
+	def source_time_series_adjusted_gaussian(self, symbol, start_date, end_date=None, relate_symbol=None, metric="Value in USD", file_name=None):
+		series = self.db.select(symbol, start_date, end_date)
+		if relate_symbol is not None:
+			series_two = self.db.select(relate_symbol, start_date, end_date)
+			series = self.analyzer.get_series_relation(series, series_two)
+		self.time_series_adjusted_gaussian(series, metric, file_name=file_name)
+		
+		
+	#Produces a guassian representation of a commodities value in a specified window of time
+	def time_series_adjusted_gaussian(self, series, metric="Value in USD", file_name=None):
+		symbol = series["ticker_name"].iloc[0]
+		start = str(series["Date"].iloc[0])
+		end = str(series["Date"].iloc[-1])
+		title = "Value of " + symbol + " from " + start + " to " + end + " normalized"
+		series_adjusted = self.analyzer.adjust_by_linear_regression(series)
+		current_value = self.analyzer.get_pdf_of_date_on_guassian(series_adjusted)
+		distribution =  self.analyzer.get_gaussian_distribution(series_adjusted)
+		self.graphDisplay.distribution_line(distribution, axis_labels=[metric, "Probability"], scatter_pairs=[current_value], title=title, file_name=file_name)
 		
 	#Sources data for and displays the beta relationship of two commodities displaying frequency on a colormesh heat map
 	def source_colormesh_beta_relationship(self, symbol_one, symbol_two, start_date, end_date=None, days_increment=5, data_partitions=64, file_name=None):
@@ -97,12 +135,11 @@ class GraphFactory:
 		change_two = self.analyzer.change_series(commodity_two, days_increment)
 		kde = self.analyzer.kernal_density_estimation(change_one, change_two, data_partitions)
 		x_value, y_series, z_series = self.analyzer.get_distribution_slice_from_tensor(kde, percent_change)
-		maximum_point = self.analyzer.get_maximum_vector(y_series, z_series)
 		symbol_one = commodity_one["ticker_name"].iloc[0]
 		symbol_two = commodity_two["ticker_name"].iloc[0]
 		axis_labels = [symbol_two + " % Change", "Probability"]
 		title = symbol_one + " when " + symbol_two + " changes " + str(round(x_value, 2)) + "%"
-		self.graphDisplay.distribution_line([y_series, z_series], [maximum_point], axis_labels, title, file_name=file_name)
+		self.graphDisplay.distribution_line([y_series, z_series], [], axis_labels, title, file_name=file_name)
 		
 	#Sources data for and displays the beta relationship of two commodities displaying frequency on a colormesh heat map
 	#and displays a linear regression of the relationship
@@ -141,8 +178,8 @@ class GraphFactory:
 		self.beta_relationship(series_one, series_two, days_increment, file_name=file_name)
 	
 	#Displays the time series value of a commodity in terms of the value of another
-	def relational_series(self, commodity_one, commodity_two):
-		data = self.analyzer.get_series_relation(commodity_one, commodity_two, file_name=None)
+	def relational_series(self, commodity_one, commodity_two, file_name=None):
+		data = self.analyzer.get_series_relation(commodity_one, commodity_two)
 		title = "Value of " + data["ticker_name"].iloc[0] + " over time"
 		self.graphDisplay.simple_time_series(data, "Relative Value", title, file_name=file_name)
 		
